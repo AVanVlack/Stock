@@ -50,6 +50,10 @@ var all = {
     callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
   },
 
+  quandl: {
+    api_key: process.env.QUANDL_KEY
+  }
+
 };
 
 // Export the config object based on the NODE_ENV

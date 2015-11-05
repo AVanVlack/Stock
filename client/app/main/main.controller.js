@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('vanvlackStockApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
+  .controller('MainCtrl', function ($scope, $http, socket, $timeout) {
     $scope.stockData = [];
-
+    $scope.alerts = [];
 
     $http.get('/api/stocks').success(function(stockData) {
       $scope.stockData = stockData;
@@ -72,7 +72,20 @@ angular.module('vanvlackStockApp')
       $http.delete('/api/stocks/' + stock._id);
     };
 
+    $scope.timeOut = function(){
+      $timeout(function(){
+        socket.unsyncUpdates('stock');
+        $scope.alerts.push({msg: 'You have been disconected from the server! Refresh to reconnect.'});
+      }, 1000 * 60 * 5 );
+    }
+
+    $scope.closeAlert = function(index) {
+    $scope.alerts.splice(index, 1);
+    };
+
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('stock');
     });
+
+    $scope.timeOut();
   });
